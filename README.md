@@ -22,7 +22,14 @@ Videos:
 Using the package:
 
 1. Download the package
-2. run the command "python test.py". The GUI should open up.
+2. Install the dependency packages (matplotlib and pyqt4)
+3. run the command "python test.py". The GUI should open up.
 
 
+Dependency Package installation:
+1. matplotlib: sudo apt-get install python-matplotlib
+2. pyqt4: sudo apt-get install python-qt4
 
+
+Platform: 
+1. The tool and the flow has been tested on Ubuntu-14.04 and Ubuntu-16.04
