@@ -557,7 +557,11 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_gv.addWidget(self.canvas)
 		lay_gv.addWidget(self.toolbar)
 
-		final_layout.addLayout(layout)
+		scroll = QScrollArea()          #change
+		temp = QWidget()
+		temp.setLayout(layout)
+		scroll.setWidget(temp)		#change
+		final_layout.addWidget(scroll)	#change
 		final_layout.addLayout(lay_gv)
 
 		self.slxl.valueChanged.connect(self.print_x_l)
@@ -566,9 +570,8 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.slyh.valueChanged.connect(self.print_y_h)
 		self.slzl.valueChanged.connect(self.print_z_l)
 		self.slzh.valueChanged.connect(self.print_z_h)	
-
+		
 		self.setLayout(final_layout)
-
 		self.cb_axes.addItem("Z-Axis")
 
 		self.col_fil = col_filtering_window()
