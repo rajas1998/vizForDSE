@@ -362,6 +362,10 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.column_filtering_but.setDefault(True)
 		self.column_filtering_but.clicked.connect(self.column_filtering_func)
 
+		self.swap_axis_but = QPushButton('&Swap Axis')
+		self.swap_axis_but.setDefault(True)
+		self.swap_axis_but.clicked.connect(self.swap_axis_func)
+
 		self.enable_cb_3 = QCheckBox("Enable Third Parameter")
 		self.enable_cb_3.setChecked(False)
 		self.enable_cb_3.stateChanged.connect(self.enable_func_3)
@@ -537,6 +541,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 
 		lay_up_cb.addWidget(self.update_but)
 		lay_up_cb.addWidget(self.column_filtering_but)
+		lay_up_cb.addWidget(self.swap_axis_but)
 		lay_up_cb.addWidget(self.enable_title)
 		lay_up_cb.addWidget(self.enable_3d)
 
@@ -768,6 +773,18 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 	def column_filtering_func(self):					#shows the column filtering window
 		self.col_fil.show()
 
+	def swap_axis_func(self):
+		xlabel = self.cbx.currentText()
+		ylabel = self.cby.currentText()
+		if not self.enable_custom_formula.isChecked():
+			index_in_cbx = self.cbx.findText(ylabel)
+			index_in_cby = self.cby.findText(xlabel)
+			if index_in_cby >= 0 and index_in_cby >= 0:
+				self.cbx.setCurrentIndex(index_in_cbx)
+				self.cby.setCurrentIndex(index_in_cby)
+				self.selectionchangex()
+				self.selectionchangey()
+				self.update_plot()
 	def spzl_valuechange(self):							#sets lower value of z-axis slider based on spin box value
 		global change
 		change = 1
