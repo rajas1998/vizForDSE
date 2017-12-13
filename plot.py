@@ -12,6 +12,7 @@ from PyQt4 import QtGui, QtCore
 from mpl_toolkits.mplot3d import Axes3D
 from mpl_toolkits.mplot3d import proj3d
 from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage, AnnotationBbox)
+from matplotlib.patches import Rectangle
 
 
 def plotter (fig,canvas,v):
@@ -93,7 +94,7 @@ def plotter (fig,canvas,v):
 			for j in numberFields :
 
 				if t.value == j:
-					t.value = [float(i[fieldList.index(j)]) for i in dataBase]											# setting the value as the whole column that is specified in the formula
+					t.value = [float(i[fieldList.index(j)]) for i in dataBase]		# setting the value as the whole column that is specified in the formula
 					break
 			return t
 
@@ -794,8 +795,11 @@ def plotter (fig,canvas,v):
 			# n, bins, patches = plt.hist(plotPointsX, 50, normed=1, facecolor='g', alpha=0.75)
 			# plt.hist([x, y], color=['g','r'], alpha=0.75, bins=50)
 
+			handles = [Rectangle((0,0),1,1,color=colour[int(i%distinctValues2)] ,ec="k") for i in range(distinctValues2)]
+			ax.legend(handles, distinctVals2,loc='center', bbox_to_anchor=(0.99, 0.9),title = configLines[0][6])
+
 			ax.hist([plotPointsX[i] for i in range(distinctValues2)], color=[colour[int(i%distinctValues2)] for i in range(distinctValues2)], alpha=0.8, bins=50)
-			
+
 
 
 		else:																	
@@ -872,13 +876,13 @@ def plotter (fig,canvas,v):
 			if bool(zDict) :
 				ax.set_zticklabels([value for key, value in zDict.items()],[key for key, value in zDict.items()])
 			
-		if configLines[0][6] != '' :
-			legend1 = ax.legend(plotLines1,distinctVals2,loc='center', bbox_to_anchor=(0.99, 0.9),title = configLines[0][6])
-			# check whether plt.gca() works , it does work in this standalone program
-			fig.gca().add_artist(legend1)
-		if configLines[0][5] != '' and cType != 'line' :
-			ax.legend(plotLines2,distinctVals1,loc='center', bbox_to_anchor=(0.01, 0.9),title = configLines[0][5])
-		
+			if configLines[0][6] != '' :
+				legend1 = ax.legend(plotLines1,distinctVals2,loc='center', bbox_to_anchor=(0.99, 0.9),title = configLines[0][6])
+				# check whether plt.gca() works , it does work in this standalone program
+				fig.gca().add_artist(legend1)
+			if configLines[0][5] != '' and cType != 'line' :
+				ax.legend(plotLines2,distinctVals1,loc='center', bbox_to_anchor=(0.01, 0.9),title = configLines[0][5])
+			
 		canvas.draw()
 		fig.canvas.mpl_connect('motion_notify_event', hover)
 

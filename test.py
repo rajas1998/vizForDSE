@@ -951,7 +951,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 	def selectionchangex(self):							#changes the upper and lower limits of sliders/spin boxes based on the current selected field
 														#also disables them if the current field has strings as values(X-AXIS)
 		b = str(PyQt4.QtCore.QString(self.cbx.currentText()))
-		print "--->" + b
+		#print "--->" + b
 		if b in col_with_strings:
 			self.spxl.setEnabled(False)
 			self.spxh.setEnabled(False)
