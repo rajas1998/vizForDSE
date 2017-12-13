@@ -227,6 +227,12 @@ class col_filtering_window(QWidget):							#defines the class for column filteri
 			col_fil_list[b]=(self.sp_l.value(),self.sp_h.value())
 		self.close()
 
+	
+
+
+		
+		
+
 
 class sub_window(QWidget):										#class defining the sub windows(as they appear in tabs)
 
@@ -251,6 +257,8 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.graph_type_cb = QComboBox()
 		self.graph_type_cb.addItem("scatter")
 		self.graph_type_cb.addItem("line")
+		self.graph_type_cb.addItem("histogram")
+
 
 		lay_graph_type = QVBoxLayout()
 
@@ -266,6 +274,10 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.enable_curve_fitting = QCheckBox("Enable curve fitting")
 		self.enable_curve_fitting.setChecked(False)
 		self.enable_curve_fitting.stateChanged.connect(self.curve_fitting_func)
+
+
+		self.graph_type_cb.currentIndexChanged.connect(self.selectionchangetype)
+
 
 		lay_curve_fitting_h = QHBoxLayout()
 		lay_curve_fitting_v = QVBoxLayout()
@@ -862,6 +874,79 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		else:
 			a = (int)(self.spyh.value())
 		self.slyh.setValue(a)
+
+
+
+	def selectionchangetype(self):
+		b = str(PyQt4.QtCore.QString(self.graph_type_cb.currentText()))
+		if b=="histogram":
+			self.slyl.setEnabled(False)
+			self.slyh.setEnabled(False)
+			self.spyh.setEnabled(False)
+			self.spyl.setEnabled(False)
+			self.cby.setEnabled(False)
+
+
+			# self.degree_label.setEnabled(False)
+			# self.curve_fitting_sb.setEnabled(False)
+			# self.cb_axes.setEnabled(False)
+			# self.cbz.setEnabled(False)	
+			# self.slzl.setEnabled(False)
+			# self.slzh.setEnabled(False)
+			# self.spzl.setEnabled(False)
+			# self.spzh.setEnabled(False)
+			# self.zl.setEnabled(False)
+			# self.zh.setEnabled(False)
+			# self.z_axis_label.setEnabled(False)
+			# self.z_axis_field.setEnabled(False)
+			# self.enable_plot_pareto.setEnabled(False)
+			# self.pareto_x.setEnabled(False)
+			# self.pareto_y.setEnabled(False)
+			# self.pareto_cbx.setEnabled(False)
+			# self.pareto_cby.setEnabled(False)
+			# self.enable_3d.setEnabled(False)
+			# self.cb3.setEnabled(False)
+
+			self.enable_curve_fitting.setEnabled(False)
+			self.enable_plot_pareto.setEnabled(False)
+			self.enable_cb_3.setEnabled(False)
+
+
+
+
+
+
+
+		else:
+			self.slyl.setEnabled(True)
+			self.slyh.setEnabled(True)
+			self.spyh.setEnabled(True)
+			self.spyl.setEnabled(True)
+			self.cby.setEnabled(True)
+
+			# self.degree_label.setEnabled(True)
+			# self.curve_fitting_sb.setEnabled(True)
+			# self.cb_axes.setEnabled(True)
+			# self.cbz.setEnabled(True)	
+			# self.slzl.setEnabled(True)
+			# self.slzh.setEnabled(True)
+			# self.spzl.setEnabled(True)
+			# self.spzh.setEnabled(True)
+			# self.zl.setEnabled(True)
+			# self.zh.setEnabled(True)
+			# self.z_axis_label.setEnabled(True)
+			# self.z_axis_field.setEnabled(True)
+			# self.enable_plot_pareto.setEnabled(True)
+			# self.pareto_x.setEnabled(True)
+			# self.pareto_y.setEnabled(True)
+			# self.pareto_cbx.setEnabled(True)
+			# self.pareto_cby.setEnabled(True)
+			# self.enable_3d.setEnabled(True)
+			# self.cb3.setEnabled(True)
+			
+			self.enable_curve_fitting.setEnabled(True)
+			self.enable_plot_pareto.setEnabled(True)
+			self.enable_cb_3.setEnabled(True)
 
 	def selectionchangex(self):							#changes the upper and lower limits of sliders/spin boxes based on the current selected field
 														#also disables them if the current field has strings as values(X-AXIS)

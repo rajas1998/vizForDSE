@@ -317,9 +317,9 @@ def plotter (fig,canvas,v):
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	cType =  configLines[0][-3] 																									# type of graph - line or scatter
+	cType =  configLines[0][-3] 					# type of graph - line or scatter
 
-	if configLines[0][-2] !='':																										# set the degree of polynomial for curve fitting
+	if configLines[0][-2] !='':					# set the degree of polynomial for curve fitting
 		curveFit = 'True'
 		deg = configLines[0][-2]
 		#print "deg = " + deg
@@ -785,79 +785,93 @@ def plotter (fig,canvas,v):
 		msg.setStandardButtons(QMessageBox.Ok)
 		msg.exec_()
 
-	else:																																											# no error plot graph
-		i = 0
-		ax.set_xlabel(configLines[0][1])
-		ax.set_ylabel(configLines[0][2])
-		ax.set_title(configLines[0][7])
-		if configLines[0][3] != '1' :																															# 3d disabled
-			while i < distinctValues1 * distinctValues2 :
-				
-				if cType == 'scatter':
-					Line, = ax.plot(plotPointsX[i],plotPointsY[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
-				elif cType =='line':
-					Line, = ax.plot(plotPointsX[i],plotPointsY[i],color=colour[int(i%distinctValues2)])
-				
-				if curveFit != 'False':																																# curvefit enabled
-					pX=[]
-					for j in plotPointsX :
-						pX=pX+j
-					pY =[]
-					for j in plotPointsY:
-						pY=pY+j
-					coeff = pf (pX,pY,int(deg),rcond=None, full=False, w=None, cov=False)
-					cList=[]
-					for j in coeff:
-						if j<0.01:
-							cList.append(0)
-						else:
-							cList.append(round(j,2))
-					k=0
-					txt = ''
-					while k<int(deg):
-						txt =txt+'a'+str(k)+'='+str(cList.pop())+','
-						k+=1
-					txt=txt+'a'+str(k)+'='+str(cList.pop())
-					#ax.text(0.1,0.1,txt)
-					ax.text(0.95, 0.01, txt,verticalalignment='bottom', horizontalalignment='right',transform=ax.transAxes,color='black', fontsize=10)
-					
-				if i < distinctValues2:
-					plotLines1.append(Line)
-				if distinctValues2 == 1:
-					plotLines2.append(Line)
-				elif i%distinctValues2 == 1 :
-					plotLines2.append(Line)
-				line.append(Line)
-				print (int(i/distinctValues1),int(i%distinctValues2))
-				
-				i = i + 1
-		else :																																															#3d enabled
-			ax.set_zlabel(configLines[0][4])
-			while i < distinctValues1 * distinctValues2 :
-				
-				if cType == 'scatter':
-					Line, = ax.plot(plotPointsX[i],plotPointsY[i],plotPointsZ[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
-				elif cType =='line':
-					Line, = ax.plot(plotPointsX[i],plotPointsY[i],plotPointsZ[i],color=colour[int(i%distinctValues2)])
-					
-				if i < distinctValues2:
-					plotLines1.append(Line)
-				if distinctValues2 == 1:
-					plotLines2.append(Line)
-				elif i%distinctValues2 == 1 :
-					plotLines2.append(Line)
-				line.append(Line)
-				print (int(i/distinctValues1),int(i%distinctValues2))
-				
-				i = i + 1
+	else:          # no error plot graph
+		if cType == 'histogram':
+			ax.set_xlabel(configLines[0][1])
+			ax.set_ylabel("frequency")
+			ax.set_title(configLines[0][7])
 
-		if bool(xDict) :
-			plt.xticks([value for key, value in xDict.items()],[key for key, value in xDict.items()],rotation=70)
-		if bool(yDict) :
-			plt.yticks([value for key, value in yDict.items()],[key for key, value in yDict.items()],rotation=0)
-		if bool(zDict) :
-			ax.set_zticklabels([value for key, value in zDict.items()],[key for key, value in zDict.items()])
-		
+			# n, bins, patches = plt.hist(plotPointsX, 50, normed=1, facecolor='g', alpha=0.75)
+			# plt.hist([x, y], color=['g','r'], alpha=0.75, bins=50)
+
+			ax.hist([plotPointsX[i] for i in range(distinctValues2)], color=[colour[int(i%distinctValues2)] for i in range(distinctValues2)], alpha=0.8, bins=50)
+			
+
+
+		else:																	
+			i = 0
+			ax.set_xlabel(configLines[0][1])
+			ax.set_ylabel(configLines[0][2])
+			ax.set_title(configLines[0][7])
+			if configLines[0][3] != '1' :											# 3d disabled
+				while i < distinctValues1 * distinctValues2 :
+					
+					if cType == 'scatter':
+						Line, = ax.plot(plotPointsX[i],plotPointsY[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
+					elif cType =='line':
+						Line, = ax.plot(plotPointsX[i],plotPointsY[i],color=colour[int(i%distinctValues2)])
+					
+					
+					if curveFit != 'False':												# curvefit enabled
+						pX=[]
+						for j in plotPointsX :
+							pX=pX+j
+						pY =[]
+						for j in plotPointsY:
+							pY=pY+j
+						coeff = pf (pX,pY,int(deg),rcond=None, full=False, w=None, cov=False)
+						cList=[]
+						for j in coeff:
+							if j<0.01:
+								cList.append(0)
+							else:
+								cList.append(round(j,2))
+						k=0
+						txt = ''
+						while k<int(deg):
+							txt =txt+'a'+str(k)+'='+str(cList.pop())+','
+							k+=1
+						txt=txt+'a'+str(k)+'='+str(cList.pop())
+						#ax.text(0.1,0.1,txt)
+						ax.text(0.95, 0.01, txt,verticalalignment='bottom', horizontalalignment='right',transform=ax.transAxes,color='black', fontsize=10)
+						
+					if i < distinctValues2:
+						plotLines1.append(Line)
+					if distinctValues2 == 1:
+						plotLines2.append(Line)
+					elif i%distinctValues2 == 1 :
+						plotLines2.append(Line)
+					line.append(Line)
+					#print (int(i/distinctValues1),int(i%distinctValues2))
+					
+					i = i + 1
+			else :																																															#3d enabled
+				ax.set_zlabel(configLines[0][4])
+				while i < distinctValues1 * distinctValues2 :
+					
+					if cType == 'scatter':
+						Line, = ax.plot(plotPointsX[i],plotPointsY[i],plotPointsZ[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
+					elif cType =='line':
+						Line, = ax.plot(plotPointsX[i],plotPointsY[i],plotPointsZ[i],color=colour[int(i%distinctValues2)])
+						
+					if i < distinctValues2:
+						plotLines1.append(Line)
+					if distinctValues2 == 1:
+						plotLines2.append(Line)
+					elif i%distinctValues2 == 1 :
+						plotLines2.append(Line)
+					line.append(Line)
+					#print (int(i/distinctValues1),int(i%distinctValues2))
+					
+					i = i + 1
+
+			if bool(xDict) :
+				plt.xticks([value for key, value in xDict.items()],[key for key, value in xDict.items()],rotation=70)
+			if bool(yDict) :
+				plt.yticks([value for key, value in yDict.items()],[key for key, value in yDict.items()],rotation=0)
+			if bool(zDict) :
+				ax.set_zticklabels([value for key, value in zDict.items()],[key for key, value in zDict.items()])
+			
 		if configLines[0][6] != '' :
 			legend1 = ax.legend(plotLines1,distinctVals2,loc='center', bbox_to_anchor=(0.99, 0.9),title = configLines[0][6])
 			# check whether plt.gca() works , it does work in this standalone program
@@ -867,4 +881,5 @@ def plotter (fig,canvas,v):
 		
 		canvas.draw()
 		fig.canvas.mpl_connect('motion_notify_event', hover)
+
 	f.close()
