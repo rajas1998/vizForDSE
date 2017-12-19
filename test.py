@@ -258,6 +258,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.graph_type_cb.addItem("scatter")
 		self.graph_type_cb.addItem("line")
 		self.graph_type_cb.addItem("histogram")
+		self.graph_type_cb.addItem("bar-graph")
 
 
 		lay_graph_type = QVBoxLayout()
@@ -885,7 +886,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			self.spyh.setEnabled(False)
 			self.spyl.setEnabled(False)
 			self.cby.setEnabled(False)
-
+			self.enable_custom_formula.setEnabled(False)
 
 			# self.degree_label.setEnabled(False)
 			# self.curve_fitting_sb.setEnabled(False)
@@ -913,9 +914,16 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 
 
 
-
-
-
+		elif b == "bar-graph":
+			self.slyl.setEnabled(True)
+			self.slyh.setEnabled(True)
+			self.spyh.setEnabled(True)
+			self.spyl.setEnabled(True)
+			self.cby.setEnabled(True)
+			self.enable_curve_fitting.setEnabled(False)
+			self.enable_plot_pareto.setEnabled(False)
+			self.enable_cb_3.setEnabled(False)
+			self.enable_custom_formula.setEnabled(False)
 
 		else:
 			self.slyl.setEnabled(True)
@@ -943,7 +951,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			# self.pareto_cby.setEnabled(True)
 			# self.enable_3d.setEnabled(True)
 			# self.cb3.setEnabled(True)
-			
+			self.enable_custom_formula.setEnabled(True)
 			self.enable_curve_fitting.setEnabled(True)
 			self.enable_plot_pareto.setEnabled(True)
 			self.enable_cb_3.setEnabled(True)

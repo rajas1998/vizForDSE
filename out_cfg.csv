@@ -1,1 +1,1 @@
-/Users/vrittika/vizForDSE/sample_inputs/file_wl2.csv,Accuracy,Accuracy,4,,, Bmodel,,f,31.325,87.525,31.325,70.665,31.325,87.525,6, Bmodel,1.0,4.0, Weight,90.0,286.0, Ncore,1.0,8.0, Blife,3.05408789664967,62.9590766002099, WS,0.25,1.5,Accuracy,31.325,87.525,histogram,,junk
+/Users/rajas/Desktop/vizForDSE/sample_inputs/file_wl2.csv, WS, Blife,4,,, Ncore,,f,0.25,1.5,3.054088,62.959077,31.325,87.525,6, Bmodel,1.0,4.0, Weight,90.0,286.0, Ncore,1.0,8.0, Blife,3.05408789664967,62.9590766002099, WS,0.25,1.5,Accuracy,31.325,87.525,bar-graph,,junk

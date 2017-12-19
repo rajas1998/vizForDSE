@@ -46,6 +46,7 @@ def plotter (fig,canvas,v):
 	
 	distinctValues1 = 0																		# no. of 3rd para (shape) values 
 	distinctValues2 = 0																		# no. of 3rd para (shape) values 
+	distinctValues3 = 0																		# no. of x-axis values (needed if we are making a bar graph)
 	plotLines1 = []																				
 	plotLines2 = []
 
@@ -210,7 +211,7 @@ def plotter (fig,canvas,v):
 	# configLines[0][14] --> upper limit z axis
 	# configLines[0][15] --> no of numerical fields in the .csv(input file)
 	# configLines[0][16] to configLines[0][x] --> fieldname , upper limit (selected in column filtering) , lower limit (selected in column filtering) (for numerical fields)
-	# configLines[0][-3] --> type of graph (line/scatter)
+	# configLines[0][-3] --> type of graph (line/scatter/histogram/bar)
 	# configLines[0][-2] --> empty for curve fit disabled else degree of polynomial
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -446,6 +447,29 @@ def plotter (fig,canvas,v):
 			details.append([])
 			i += 1
 	
+	# checking for number of distinct values of x-axis for making a bar-graph (should be smaller than 8 for this to be possible)
+	if cType == "bar-graph":
+		enaDiff3 = fieldList.index(configLines[0][1])
+		distinctVals3 = []																															# list of distinct values in the 4th para field
+		i = 0
+		while i < fileRowNumber :																										# set distinctVals2 and distinctValues2
+			try:
+				tempIndex = distinctVals3.index(dataBase[i][enaDiff3])
+			except:
+				distinctVals3.append(dataBase[i][enaDiff3])
+				distinctValues3 += 1
+			if distinctValues3 > 8: 									#if we get more than 8 values we cannot make the bar-graph
+				distinctValues3 = float("inf")
+				break
+			i += 1
+		if distinctValues3 < 8 and distinctValues3 > 1:
+			distinctVals3.sort()
+			min_diff_x = float("inf")
+			for index_diff in range(1,len(distinctVals3)):
+				if float(distinctVals3[index_diff]) - float(distinctVals3[index_diff-1]) < min_diff_x:
+					min_diff_x = float(distinctVals3[index_diff]) - float(distinctVals3[index_diff-1])	
+	else :
+		distinctValues3 = float("inf")
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	# points stored in xPoints,yPoints and zPoints are detrmined to be valid or not based on column filtering, x axis sliders, y axis sliders
@@ -785,7 +809,13 @@ def plotter (fig,canvas,v):
 		msg.setWindowTitle("Error")
 		msg.setStandardButtons(QMessageBox.Ok)
 		msg.exec_()
-
+	elif distinctValues3 > 8 and cType == "bar-graph":
+		msg = QMessageBox()
+		msg.setIcon(QMessageBox.Warning)
+		msg.setText("X-Axis has too many values for a bar-graph")
+		msg.setWindowTitle("Error")
+		msg.setStandardButtons(QMessageBox.Ok)
+		msg.exec_()
 	else:          # no error plot graph
 		if cType == 'histogram':
 			ax.set_xlabel(configLines[0][1])
@@ -799,9 +829,6 @@ def plotter (fig,canvas,v):
 			ax.legend(handles, distinctVals2,loc='center', bbox_to_anchor=(0.99, 0.9),title = configLines[0][6])
 
 			ax.hist([plotPointsX[i] for i in range(distinctValues2)], color=[colour[int(i%distinctValues2)] for i in range(distinctValues2)], alpha=0.8, bins=50)
-
-
-
 		else:																	
 			i = 0
 			ax.set_xlabel(configLines[0][1])
@@ -812,6 +839,8 @@ def plotter (fig,canvas,v):
 					
 					if cType == 'scatter':
 						Line, = ax.plot(plotPointsX[i],plotPointsY[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
+					elif cType == 'bar-graph':
+						Line, = ax.plot([float(plotPointsX[i][j]) + i * min_diff_x * 0.06 for j in range(len(plotPointsX[i]))],plotPointsY[i],style[int(i/distinctValues2)],color=colour[int(i%distinctValues2)])
 					elif cType =='line':
 						Line, = ax.plot(plotPointsX[i],plotPointsY[i],color=colour[int(i%distinctValues2)])
 					
