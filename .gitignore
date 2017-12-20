@@ -1,0 +1,6 @@
+# Mac-OS files
+.DS_Store
+
+*.pyc
+ply/*.pyc
+out_cgf.csv
