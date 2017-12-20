@@ -3,4 +3,4 @@
 
 *.pyc
 ply/*.pyc
-out_cgf.csv
+out_cfg.csv
