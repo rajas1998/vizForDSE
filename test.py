@@ -227,6 +227,8 @@ class col_filtering_window(QWidget):							#defines the class for column filteri
 			col_fil_list[b]=(self.sp_l.value(),self.sp_h.value())
 		self.close()
 
+
+
 	
 
 
@@ -336,6 +338,8 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 
 		lay_title = QHBoxLayout()        #title layout
 
+		title_f = QVBoxLayout()
+
 		lay_xx = QHBoxLayout()           #layout containins lay_x_s and drop down box for x-axis
 		lay_yy = QHBoxLayout()           #layout containing lay_y_s and drop down box for y-axis
 		lay_33 = QVBoxLayout()
@@ -375,9 +379,14 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.column_filtering_but.setDefault(True)
 		self.column_filtering_but.clicked.connect(self.column_filtering_func)
 
+		
 		self.swap_axis_but = QPushButton('&Swap Axis')
 		self.swap_axis_but.setDefault(True)
 		self.swap_axis_but.clicked.connect(self.swap_axis_func)
+
+		self.update_constraints_but = QPushButton('&Update constraints file')
+		self.update_constraints_but.setDefault(True)
+		self.update_constraints_but.clicked.connect(self.constraints_file_func)
 
 		self.enable_cb_3 = QCheckBox("Enable Third Parameter")
 		self.enable_cb_3.setChecked(False)
@@ -541,6 +550,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_44.addWidget(self.enable_cb_4)
 		lay_zz.addLayout(lay_z_field)
 		lay_zz.addLayout(lay_z_s)
+		lay_zz.addWidget(self.enable_3d)
 
 		lay_y_custom.addLayout(lay_yy)
 		lay_y_custom.addLayout(lay_custom)
@@ -555,17 +565,22 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_up_cb.addWidget(self.update_but)
 		lay_up_cb.addWidget(self.column_filtering_but)
 		lay_up_cb.addWidget(self.swap_axis_but)
-		lay_up_cb.addWidget(self.enable_title)
-		lay_up_cb.addWidget(self.enable_3d)
+		# lay_up_cb.addWidget(self.enable_title)
+		# lay_up_cb.addWidget(self.enable_3d)
+		lay_up_cb.addWidget(self.update_constraints_but)
 
 		lay_title.addWidget(self.title_label)
 		lay_title.addWidget(self.title_name)
+
+		title_f.addWidget(self.enable_title)
+		title_f.addLayout(lay_title)
 
 		layout_az.addLayout(lay_3_4)
 		layout_az.addLayout(lay_curve_fit_graph_type)
 		layout_az.addWidget(group_box_pareto)
 
-		layout.addLayout(lay_title)
+		layout.addLayout(title_f)
+		#layout.addLayout(lay_title)
 		layout.addWidget(group_box_x)
 		layout.addWidget(group_box_y)
 		layout.addWidget(group_box_z)
@@ -722,6 +737,8 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 				for key in col_fil_list:
 					tup = col_fil_list[key]
 					out_list.extend([key,tup[0],tup[1]])
+					
+
 
 				out_list.append(self.graph_type_cb.currentText())
 				if self.enable_curve_fitting.isChecked():
@@ -732,6 +749,20 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 				cfg_writer.writerow(out_list)
 				out_cfg.close()
 				self.call_plot()						#calls the call_plot function which calles the plotter function from plot.py
+
+
+	def constraints_file_func(self):
+		f = open("constraints.ecl","a+")
+		a=col_fil_list.keys()
+		for key in a[:-1]:
+			tup = col_fil_list[key]
+			f.write('\n\t'+key.strip()+' $>= '+str(tup[0])+',')
+			f.write('\n\t'+key.strip()+' $=< '+str(tup[1])+',')
+		tup = col_fil_list[a[-1]]
+		f.write('\n\t'+a[-1].strip()+' $>= ' +str(tup[0])+',')
+		f.write('\n\t'+a[-1].strip()+' $=< '+str(tup[1])+'.')
+
+
 
 	def call_plot(self):
 		if self.enable_3d.isChecked():
@@ -1092,7 +1123,10 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 				a = lower_limit[b] + (((float)(self.slzh.value())/100) * (upper_limit[b] - lower_limit[b]))
 			else:
 				a = (float)(self.slzh.value())
-			self.spzh.setValue(a)      
+			self.spzh.setValue(a)
+
+	#def update_file_func(self):
+
 
 class tabs(QTabWidget):									#used to implement tabs
 														#each tab contains a sub window as defined above

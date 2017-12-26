@@ -4,3 +4,4 @@
 *.pyc
 ply/*.pyc
 out_cfg.csv
+constraints.ecl
