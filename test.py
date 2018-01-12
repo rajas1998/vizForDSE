@@ -12,6 +12,7 @@ from sys import stdout
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtGui, QtCore
+import os
 
 #matplotlib.use("QT4Agg")
 	
@@ -240,8 +241,9 @@ class update_constraints_window(QWidget):
 
 		self.cb = QComboBox()
 		self.cb.clear()
-		list1=["Accuracy","NCore","Bmodel","Blife","Weight","WS"]
-		self.cb.addItems(list1)
+		# list1=["Accuracy","NCore","Bmodel","Blife","Weight","WS"]
+		# print list1
+		# self.cb.addItems(list1)
 
 		# LOWER
 		self.lower_limit_label = QLabel("Lower limit: ")
@@ -415,8 +417,7 @@ class update_constraints_window(QWidget):
 		self.upper_limit.setEnabled(False)
 		self.enable_lower_limit.setChecked(False)
 		self.enable_upper_limit.setChecked(False)
-		self.enable_allowed_values.setChecked(False)
-		
+		self.enable_allowed_values.setChecked(False)	
 
 
 
@@ -461,6 +462,35 @@ class update_constraints_window(QWidget):
 
 			final_constraints.append(len(final_constraints))
 		print final_constraints
+		f = open("constraints.ecl","w+")
+		write = ""
+		a = final_constraints[:-1]
+		i = 0
+		while i < len(a):
+			if final_constraints[i+1] == 0:
+				write += '\n\t'+final_constraints[i].strip()+' $>= '+str(int(final_constraints[i+2]))+','
+				i += 3
+			elif final_constraints[i+1] == 1:
+				write += '\n\t'+final_constraints[i].strip()+' $=< '+str(int(final_constraints[i+2]))+','
+				i += 3
+			elif final_constraints[i+1] == 2:
+				write += '\n\t'+final_constraints[i].strip()+' $>= '+str(int(final_constraints[i+2]))+','
+				write += '\n\t'+final_constraints[i].strip()+' $=< '+str(int(final_constraints[i+3]))+','
+				i += 4
+			else:
+				write += '\n\t'+final_constraints[i].strip()+' :: '+str(map(int,final_constraints[i+2].split(" ")))+','
+				i += 3
+		if len(write)>0:
+			write = write[:-1] + '.'; 
+		range_constraints_string = "range_constraints("
+		for i in fields[:-1]:
+			range_constraints_string += i.strip()+", ";
+		if (len(fields)>0):
+			range_constraints_string += fields[-1].strip()
+		range_constraints_string += ") :-"
+		f.write(range_constraints_string)
+		f.write(write);
+		f.close()
 		self.close()
 
 
@@ -468,9 +498,13 @@ class update_constraints_window(QWidget):
 	def cancel_func(self):										#resets all the constraints set after opening this window
 		global final_constraints
 		del final_constraints[:]
+		cons.clear()
 		final_constraints.append(-1)
 		print final_constraints
 		self.close()
+	def addItemsinCB(self):
+		self.cb.clear()
+		self.cb.addItems(fields)
 	
 
 		
@@ -998,7 +1032,9 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		global final_constraints
 		del final_constraints[:]
 		self.set_cons.show()
-		# f = open("constraints.ecl","a+")
+		self.set_cons.addItemsinCB()
+
+		# f = open("constraints.ecl","w+")
 		# a=col_fil_list.keys()
 		# for key in a[:-1]:
 		# 	tup = col_fil_list[key]
@@ -1007,8 +1043,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		# tup = col_fil_list[a[-1]]
 		# f.write('\n\t'+a[-1].strip()+' $>= ' +str(tup[0])+',')
 		# f.write('\n\t'+a[-1].strip()+' $=< '+str(tup[1])+'.')
-
-
 
 	def call_plot(self):
 		if self.enable_3d.isChecked():
