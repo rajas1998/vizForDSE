@@ -488,12 +488,23 @@ class update_constraints_window(QWidget):
 		if (len(fields)>0):
 			range_constraints_string += fields[-1].strip()
 		range_constraints_string += ") :-"
+		range_constraints_string = "range_constraints(Ncore, Battery, MinFrames, WS, Atotal, Blife, Weight) :-"
+		# range_constraints_string += "\t\nNcore :: [1,2,4,8],\n"
+		# range_constraints_string += "\tBattery :: [1,2,3,4],\n"
+		# range_constraints_string += "\tMinFrames :: [3],\n"
+		# range_constraints_string += "\tWS :: [25,50,75,100,125,150],"
 		f.write(range_constraints_string)
 		f.write(write);
 		f.close()
 		self.close()
-
-
+		os.system("../eclipse/bin/x86_64_linux/eclipse -f ../eclipse/tmp/test.ecl -f constraints.ecl -e main,fail")
+		file_change = open("file.txt","r")
+		newfile = open("generated.csv","w")
+		x = file_change.readlines()
+		for i in x:
+			newfile.write(i[1:-2]+'\n')
+		file_change.close()
+		newfile.close()
 
 	def cancel_func(self):										#resets all the constraints set after opening this window
 		global final_constraints
