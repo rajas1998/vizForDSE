@@ -674,6 +674,10 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.update_constraints_but.setDefault(True)
 		self.update_constraints_but.clicked.connect(self.constraints_file_func)
 
+		self.undo_but = QPushButton('&Undo')
+		self.undo_but.setDefault(True)
+		self.undo_but.clicked.connect(self.undo_func)
+
 		self.enable_cb_3 = QCheckBox("Enable Third Parameter")
 		self.enable_cb_3.setChecked(False)
 		self.enable_cb_3.stateChanged.connect(self.enable_func_3)
@@ -854,6 +858,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		# lay_up_cb.addWidget(self.enable_title)
 		# lay_up_cb.addWidget(self.enable_3d)
 		lay_up_cb.addWidget(self.update_constraints_but)
+		lay_up_cb.addWidget(self.undo_but)
 
 		lay_title.addWidget(self.title_label)
 		lay_title.addWidget(self.title_name)
@@ -895,6 +900,9 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 
 		self.col_fil = col_filtering_window()
 		self.set_cons= update_constraints_window()
+	def undo_func(self):
+		pass
+	
 
 	def pareto_func(self):										#to enable and disable the widgets in the pareto window
 		if self.enable_plot_pareto.isChecked():
