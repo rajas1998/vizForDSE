@@ -29,7 +29,10 @@ curr_filename = ""												#stores the current file name
 change = 0														#used to sync the sliders and combo boxes
 cons={}
 final_constraints=[]
-
+undo_old = ""													#stores old configuration string which can be recovered on pressing undo		
+undo_new = ""													#stores configuration string on update press
+write = ""
+range_constraints_string =""
 class col_filtering_window(QWidget):							#defines the class for column filtering window
 	def __init__(self):
 		super(col_filtering_window,self).__init__()
@@ -426,6 +429,10 @@ class update_constraints_window(QWidget):
 
 		global cons
 		global final_constraints
+		global undo_old
+		global undo_new
+		global write
+		global range_constraints_string
 		b=str(PyQt4.QtCore.QString(self.cb.currentText()))
 		if (self.enable_allowed_values.isChecked()):
 			values = (self.allowed_values.text())
@@ -459,9 +466,6 @@ class update_constraints_window(QWidget):
 				final_constraints.append(field)
 				for values in cons[field]:
 					final_constraints.append(values)
-
-			final_constraints.append(len(final_constraints))
-		print final_constraints
 		f = open("constraints.ecl","w+")
 		write = ""
 		a = final_constraints[:-1]
@@ -488,11 +492,14 @@ class update_constraints_window(QWidget):
 		if (len(fields)>0):
 			range_constraints_string += fields[-1].strip()
 		range_constraints_string += ") :-"
-		range_constraints_string = "range_constraints(Ncore, Battery, MinFrames, WS, Atotal, Blife, Weight) :-"
+		range_constraints_string = "range_constraints(Ncore, Battery, MinFrames, WS, Atotal, Blife, Weight) :-" #These fields have been hardcoded for now as it was found some of these fields are necessary for tool to run
 		# range_constraints_string += "\t\nNcore :: [1,2,4,8],\n"
 		# range_constraints_string += "\tBattery :: [1,2,3,4],\n"
 		# range_constraints_string += "\tMinFrames :: [3],\n"
 		# range_constraints_string += "\tWS :: [25,50,75,100,125,150],"
+		# These are the fields that were present in the original test file
+		undo_old = undo_new
+		undo_new = write
 		f.write(range_constraints_string)
 		f.write(write);
 		f.close()
@@ -515,7 +522,7 @@ class update_constraints_window(QWidget):
 		self.close()
 	def addItemsinCB(self):
 		self.cb.clear()
-		self.cb.addItems(fields)
+		self.cb.addItems([i.strip() for i in fields])
 	
 
 		
@@ -901,7 +908,18 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.col_fil = col_filtering_window()
 		self.set_cons= update_constraints_window()
 	def undo_func(self):
-		pass
+		f = open("constraints.ecl","w+")
+		f.write(range_constraints_string)
+		f.write(undo_old);
+		f.close()
+		os.system("../eclipse/bin/x86_64_linux/eclipse -f ../eclipse/tmp/test.ecl -f constraints.ecl -e main,fail")
+		file_change = open("file.txt","r")
+		newfile = open("generated.csv","w")
+		x = file_change.readlines()
+		for i in x:
+			newfile.write(i[1:-2]+'\n')
+		file_change.close()
+		newfile.close()
 	
 
 	def pareto_func(self):										#to enable and disable the widgets in the pareto window
@@ -1050,6 +1068,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 	def constraints_file_func(self):
 		global final_constraints
 		del final_constraints[:]
+		cons.clear()
 		self.set_cons.show()
 		self.set_cons.addItemsinCB()
 

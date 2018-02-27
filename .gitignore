@@ -5,3 +5,5 @@
 ply/*.pyc
 out_cfg.csv
 constraints.ecl
+generated.csv
+file.txt
