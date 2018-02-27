@@ -280,7 +280,6 @@ def plotter (fig,canvas,v):
 			if ch == ',':
 				# add fieldLength to the list
 				fieldLengthList.append(fieldLength)
-				# print(fieldLength)
 				fieldLength = 0
 				fieldNumber = fieldNumber + 1
 			elif ch == '\n':
@@ -305,15 +304,12 @@ def plotter (fig,canvas,v):
 			fileRow=f.readline().split(",")
 			if fileRow == [""]:
 				break
-			#print(fileRow)
 			fileRowNumber = fileRowNumber + 1
 			try:
 				fileRow.remove('\n')
 			except:
 				pass
 			dataBase.append(fileRow)
-			#fileRow=f.readline().split(",")
-			#print(fileRow)
 	finally:
 		f.close()
 
@@ -615,31 +611,6 @@ def plotter (fig,canvas,v):
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # # set the plotPointsX,Y,Z depending if 3d/pareto points or none 
-
-# 	if configLines[0][3] == '3' :
-# 		if distinctValues1 > 1 and distinctValues2 > 1 :
-# 			for k in paretoPoints :
-# 				dex = distinctVals1.index(dataBase[k[2]][enaDiff1])*distinctValues2 + distinctVals2.index(dataBase[k[2]][enaDiff2])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		elif distinctValues1 > 1:
-# 			for k in paretoPoints :
-# 				dex = distinctVals1.index(dataBase[k[2]][enaDiff1])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		elif distinctValues2 > 1:
-# 			for k in paretoPoints :
-# 				dex = distinctVals2.index(dataBase[k[2]][enaDiff2])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		else :
-# 			for k in paretoPoints :
-# 				plotPointsX[0].append(k[0])
-# 				plotPointsY[0].append(k[1])
-# 				details[0].append(k[2])
 
 	i = 0
 	if configLines[0][3] == '1' :

@@ -33,3 +33,13 @@ Dependency Package installation:
 
 Platform: 
 1. The tool and the flow has been tested on Ubuntu-14.04 and Ubuntu-16.04
+
+Operating vizForDSE with external tool
+1. Download the eclipse package from www.cse.iitd.ac.in/~kedia/compress.tar.gz
+2. Extract the tarball and put it in a folder named eclipse in the same directory as this repository
+3. Edit eclipse/bin/x86_64_linux/eclipse according to your directory structure
+4. Open the example_fields_for_tool.csv file
+5. Open the generate constraints file
+6. Put in the necessary constraints and click on generate. Wait for a little time as the tool takes time to run.
+7. Open generated.csv created in the vizForDSE folder to see the csv for plotting. 
+

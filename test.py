@@ -27,12 +27,12 @@ ull = []														#temporary variable used to calculate upper limit (ull = u
 out_list = []													#stores the items to be outputted in configure file
 curr_filename = ""												#stores the current file name
 change = 0														#used to sync the sliders and combo boxes
-cons={}
-final_constraints=[]
+cons={}															#dictionary to store values of fields applied in generate constraints box		
+final_constraints=[]											#list of all constraints to generate constraints file
 undo_old = ""													#stores old configuration string which can be recovered on pressing undo		
 undo_new = ""													#stores configuration string on update press
-write = ""
-range_constraints_string =""
+write = ""														#stores the string to be written in constraints.ecl
+range_constraints_string =""									#hardcoded string (added for now for the tool)
 class col_filtering_window(QWidget):							#defines the class for column filtering window
 	def __init__(self):
 		super(col_filtering_window,self).__init__()
@@ -457,7 +457,7 @@ class update_constraints_window(QWidget):
 			ul = float(self.upper_limit.text())
 			cons[b]=[1,ul]
 
-
+		#final_constraints list created from the dictionary cons to be written in to the contrainsts file
 		if (len(cons)==0):
 			final_constraints.append(-1)
 			
@@ -469,6 +469,7 @@ class update_constraints_window(QWidget):
 		f = open("constraints.ecl","w+")
 		write = ""
 		a = final_constraints[:-1]
+		# The list is parsed and the string to be written into the file is created
 		i = 0
 		while i < len(a):
 			if final_constraints[i+1] == 0:
@@ -493,6 +494,7 @@ class update_constraints_window(QWidget):
 			range_constraints_string += fields[-1].strip()
 		range_constraints_string += ") :-"
 		range_constraints_string = "range_constraints(Ncore, Battery, MinFrames, WS, Atotal, Blife, Weight) :-" #These fields have been hardcoded for now as it was found some of these fields are necessary for tool to run
+		# Remove the above line to make the constraints file according to the fields of the currently open file
 		# range_constraints_string += "\t\nNcore :: [1,2,4,8],\n"
 		# range_constraints_string += "\tBattery :: [1,2,3,4],\n"
 		# range_constraints_string += "\tMinFrames :: [3],\n"
@@ -502,11 +504,11 @@ class update_constraints_window(QWidget):
 		undo_new = write
 		f.write(range_constraints_string)
 		f.write(write);
-		f.close()
+		f.close() #constraints file updated
 		self.close()
-		os.system("../eclipse/bin/x86_64_linux/eclipse -f ../eclipse/tmp/test.ecl -f constraints.ecl -e main,fail")
+		os.system("../eclipse/bin/x86_64_linux/eclipse -f ../eclipse/tmp/test.ecl -f constraints.ecl -e main,fail") #tool called
 		file_change = open("file.txt","r")
-		newfile = open("generated.csv","w")
+		newfile = open("generated.csv","w") #generated.csv removes the leading and trailing brackets present in each line of file.txt
 		x = file_change.readlines()
 		for i in x:
 			newfile.write(i[1:-2]+'\n')
@@ -516,13 +518,11 @@ class update_constraints_window(QWidget):
 	def cancel_func(self):										#resets all the constraints set after opening this window
 		global final_constraints
 		del final_constraints[:]
+		global cons
 		cons.clear()
-		final_constraints.append(-1)
-		print final_constraints
-		self.close()
-	def addItemsinCB(self):
+	def addItemsinCB(self):   									#adds fields to the combo box with stripped spaces
 		self.cb.clear()
-		self.cb.addItems([i.strip() for i in fields])
+		self.cb.addItems([i.strip() for i in fields])    
 	
 
 		
@@ -862,8 +862,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_up_cb.addWidget(self.update_but)
 		lay_up_cb.addWidget(self.column_filtering_but)
 		lay_up_cb.addWidget(self.swap_axis_but)
-		# lay_up_cb.addWidget(self.enable_title)
-		# lay_up_cb.addWidget(self.enable_3d)
 		lay_up_cb.addWidget(self.update_constraints_but)
 		lay_up_cb.addWidget(self.undo_but)
 
@@ -878,7 +876,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		layout_az.addWidget(group_box_pareto)
 
 		layout.addLayout(title_f)
-		#layout.addLayout(lay_title)
 		layout.addWidget(group_box_x)
 		layout.addWidget(group_box_y)
 		layout.addWidget(group_box_z)
@@ -888,11 +885,12 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_gv.addWidget(self.canvas)
 		lay_gv.addWidget(self.toolbar)
 
-		scroll = QScrollArea()          #change
+		#Making the widget resizable and scrollable
+		scroll = QScrollArea()          
 		temp = QWidget()
 		temp.setLayout(layout)
-		scroll.setWidget(temp)		#change
-		final_layout.addWidget(scroll)	#change
+		scroll.setWidget(temp)		
+		final_layout.addWidget(scroll)	
 		final_layout.addLayout(lay_gv)
 
 		self.slxl.valueChanged.connect(self.print_x_l)
@@ -907,7 +905,7 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 
 		self.col_fil = col_filtering_window()
 		self.set_cons= update_constraints_window()
-	def undo_func(self):
+	def undo_func(self):						#runs the old version used for generating the constraints file
 		f = open("constraints.ecl","w+")
 		f.write(range_constraints_string)
 		f.write(undo_old);
@@ -1072,16 +1070,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.set_cons.show()
 		self.set_cons.addItemsinCB()
 
-		# f = open("constraints.ecl","w+")
-		# a=col_fil_list.keys()
-		# for key in a[:-1]:
-		# 	tup = col_fil_list[key]
-		# 	f.write('\n\t'+key.strip()+' $>= '+str(tup[0])+',')
-		# 	f.write('\n\t'+key.strip()+' $=< '+str(tup[1])+',')
-		# tup = col_fil_list[a[-1]]
-		# f.write('\n\t'+a[-1].strip()+' $>= ' +str(tup[0])+',')
-		# f.write('\n\t'+a[-1].strip()+' $=< '+str(tup[1])+'.')
-
 	def call_plot(self):
 		if self.enable_3d.isChecked():
 			b = str(PyQt4.QtCore.QString(self.cb_axes.currentText()))
@@ -1236,27 +1224,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			self.spyl.setEnabled(False)
 			self.cby.setEnabled(False)
 			self.enable_custom_formula.setEnabled(False)
-
-			# self.degree_label.setEnabled(False)
-			# self.curve_fitting_sb.setEnabled(False)
-			# self.cb_axes.setEnabled(False)
-			# self.cbz.setEnabled(False)	
-			# self.slzl.setEnabled(False)
-			# self.slzh.setEnabled(False)
-			# self.spzl.setEnabled(False)
-			# self.spzh.setEnabled(False)
-			# self.zl.setEnabled(False)
-			# self.zh.setEnabled(False)
-			# self.z_axis_label.setEnabled(False)
-			# self.z_axis_field.setEnabled(False)
-			# self.enable_plot_pareto.setEnabled(False)
-			# self.pareto_x.setEnabled(False)
-			# self.pareto_y.setEnabled(False)
-			# self.pareto_cbx.setEnabled(False)
-			# self.pareto_cby.setEnabled(False)
-			# self.enable_3d.setEnabled(False)
-			# self.cb3.setEnabled(False)
-
 			self.enable_curve_fitting.setEnabled(False)
 			self.enable_plot_pareto.setEnabled(False)
 			self.enable_cb_3.setEnabled(False)
@@ -1280,26 +1247,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			self.spyh.setEnabled(True)
 			self.spyl.setEnabled(True)
 			self.cby.setEnabled(True)
-
-			# self.degree_label.setEnabled(True)
-			# self.curve_fitting_sb.setEnabled(True)
-			# self.cb_axes.setEnabled(True)
-			# self.cbz.setEnabled(True)	
-			# self.slzl.setEnabled(True)
-			# self.slzh.setEnabled(True)
-			# self.spzl.setEnabled(True)
-			# self.spzh.setEnabled(True)
-			# self.zl.setEnabled(True)
-			# self.zh.setEnabled(True)
-			# self.z_axis_label.setEnabled(True)
-			# self.z_axis_field.setEnabled(True)
-			# self.enable_plot_pareto.setEnabled(True)
-			# self.pareto_x.setEnabled(True)
-			# self.pareto_y.setEnabled(True)
-			# self.pareto_cbx.setEnabled(True)
-			# self.pareto_cby.setEnabled(True)
-			# self.enable_3d.setEnabled(True)
-			# self.cb3.setEnabled(True)
 			self.enable_custom_formula.setEnabled(True)
 			self.enable_curve_fitting.setEnabled(True)
 			self.enable_plot_pareto.setEnabled(True)
@@ -1442,9 +1389,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			else:
 				a = (float)(self.slzh.value())
 			self.spzh.setValue(a)
-
-	#def update_file_func(self):
-
 
 class tabs(QTabWidget):									#used to implement tabs
 														#each tab contains a sub window as defined above
