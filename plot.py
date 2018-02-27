@@ -570,76 +570,7 @@ def plotter (fig,canvas,v):
 				m += 1
 			i += 1
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# i = 0
-
-	# # if paretopoints are enabled - find the pareto points and add them to paretoPoints
-
-	# if configLines[0][3] == '3' :
-	# 	if configLines[0][4] == '1' :
-	# 		tempList = sorted(filterPoints)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ >= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '2' :
-	# 		tempList = sorted(filterPoints)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ <= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '3' :
-	# 		tempList = sorted(filterPoints,reverse=True)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ >= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '4' :
-	# 		tempList = sorted(filterPoints,reverse=True)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ <= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# # set the plotPointsX,Y,Z depending if 3d/pareto points or none 
-
-# 	if configLines[0][3] == '3' :
-# 		if distinctValues1 > 1 and distinctValues2 > 1 :
-# 			for k in paretoPoints :
-# 				dex = distinctVals1.index(dataBase[k[2]][enaDiff1])*distinctValues2 + distinctVals2.index(dataBase[k[2]][enaDiff2])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		elif distinctValues1 > 1:
-# 			for k in paretoPoints :
-# 				dex = distinctVals1.index(dataBase[k[2]][enaDiff1])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		elif distinctValues2 > 1:
-# 			for k in paretoPoints :
-# 				dex = distinctVals2.index(dataBase[k[2]][enaDiff2])
-# 				plotPointsX[dex].append(k[0])
-# 				plotPointsY[dex].append(k[1])
-# 				details[dex].append(k[2])
-# 		else :
-# 			for k in paretoPoints :
-# 				plotPointsX[0].append(k[0])
-# 				plotPointsY[0].append(k[1])
-# 				details[0].append(k[2])
+	details[0].append(k[2])
 
 	i = 0
 	if configLines[0][3] == '1' :

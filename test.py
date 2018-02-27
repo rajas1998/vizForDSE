@@ -236,7 +236,7 @@ class col_filtering_window(QWidget):							#defines the class for column filteri
 
 
 	
-class update_constraints_window(QWidget):
+class update_constraints_window(QWidget):			# WINDOW TO GENERATE CONSTRAINTS FILE
 	def __init__(self):
 		super(update_constraints_window,self).__init__()
 		self.setWindowTitle(" Setting constraints ")
@@ -244,9 +244,7 @@ class update_constraints_window(QWidget):
 
 		self.cb = QComboBox()
 		self.cb.clear()
-		# list1=["Accuracy","NCore","Bmodel","Blife","Weight","WS"]
-		# print list1
-		# self.cb.addItems(list1)
+		
 
 		# LOWER
 		self.lower_limit_label = QLabel("Lower limit: ")
@@ -310,7 +308,7 @@ class update_constraints_window(QWidget):
 		choose.addLayout(upper_limitf)
 		choose.addLayout(allowed_valuesf)
 
-		###
+		
 		lay_constraints = QHBoxLayout()
 		lay_constraints.addWidget(self.cb)
 		lay_constraints.addLayout(choose)
@@ -425,10 +423,10 @@ class update_constraints_window(QWidget):
 
 
 
-	def generate_func(self):						#######
+	def generate_func(self):						
 
-		global cons
-		global final_constraints
+		global cons 									# dictionary to store the final constraints
+		global final_constraints						
 		global undo_old
 		global undo_new
 		global write
@@ -436,7 +434,7 @@ class update_constraints_window(QWidget):
 		b=str(PyQt4.QtCore.QString(self.cb.currentText()))
 		if (self.enable_allowed_values.isChecked()):
 			values = (self.allowed_values.text())
-			cons[b]=[3,str(values)]
+			cons[b]=[3,str(values)]									# 3 denotes insertion of discrete values
 			#print cons[b]
 		elif (self.enable_lower_limit.isChecked() and self.enable_upper_limit.isChecked()):
 			ll = float(self.lower_limit.text())
@@ -449,13 +447,13 @@ class update_constraints_window(QWidget):
 				msg.setStandardButtons(QMessageBox.Ok)
 				msg.exec_()
 			else:
-				cons[b]=[2,ll,ul]
+				cons[b]=[2,ll,ul]									# 2 implies both upper and lower limits have been specified
 		elif (self.enable_lower_limit.isChecked()):
 			ll=float(self.lower_limit.text())
-			cons[b]=[0,ll]
+			cons[b]=[0,ll]											# 0 if only the lower limit specified
 		elif (self.enable_upper_limit.isChecked()):
 			ul = float(self.upper_limit.text())
-			cons[b]=[1,ul]
+			cons[b]=[1,ul]											# 1 if only the upper limit is specified
 
 
 		if (len(cons)==0):
@@ -862,8 +860,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		lay_up_cb.addWidget(self.update_but)
 		lay_up_cb.addWidget(self.column_filtering_but)
 		lay_up_cb.addWidget(self.swap_axis_but)
-		# lay_up_cb.addWidget(self.enable_title)
-		# lay_up_cb.addWidget(self.enable_3d)
 		lay_up_cb.addWidget(self.update_constraints_but)
 		lay_up_cb.addWidget(self.undo_but)
 
@@ -878,7 +874,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		layout_az.addWidget(group_box_pareto)
 
 		layout.addLayout(title_f)
-		#layout.addLayout(lay_title)
 		layout.addWidget(group_box_x)
 		layout.addWidget(group_box_y)
 		layout.addWidget(group_box_z)
@@ -1072,15 +1067,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 		self.set_cons.show()
 		self.set_cons.addItemsinCB()
 
-		# f = open("constraints.ecl","w+")
-		# a=col_fil_list.keys()
-		# for key in a[:-1]:
-		# 	tup = col_fil_list[key]
-		# 	f.write('\n\t'+key.strip()+' $>= '+str(tup[0])+',')
-		# 	f.write('\n\t'+key.strip()+' $=< '+str(tup[1])+',')
-		# tup = col_fil_list[a[-1]]
-		# f.write('\n\t'+a[-1].strip()+' $>= ' +str(tup[0])+',')
-		# f.write('\n\t'+a[-1].strip()+' $=< '+str(tup[1])+'.')
 
 	def call_plot(self):
 		if self.enable_3d.isChecked():
@@ -1236,27 +1222,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			self.spyl.setEnabled(False)
 			self.cby.setEnabled(False)
 			self.enable_custom_formula.setEnabled(False)
-
-			# self.degree_label.setEnabled(False)
-			# self.curve_fitting_sb.setEnabled(False)
-			# self.cb_axes.setEnabled(False)
-			# self.cbz.setEnabled(False)	
-			# self.slzl.setEnabled(False)
-			# self.slzh.setEnabled(False)
-			# self.spzl.setEnabled(False)
-			# self.spzh.setEnabled(False)
-			# self.zl.setEnabled(False)
-			# self.zh.setEnabled(False)
-			# self.z_axis_label.setEnabled(False)
-			# self.z_axis_field.setEnabled(False)
-			# self.enable_plot_pareto.setEnabled(False)
-			# self.pareto_x.setEnabled(False)
-			# self.pareto_y.setEnabled(False)
-			# self.pareto_cbx.setEnabled(False)
-			# self.pareto_cby.setEnabled(False)
-			# self.enable_3d.setEnabled(False)
-			# self.cb3.setEnabled(False)
-
 			self.enable_curve_fitting.setEnabled(False)
 			self.enable_plot_pareto.setEnabled(False)
 			self.enable_cb_3.setEnabled(False)
@@ -1280,26 +1245,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 			self.spyh.setEnabled(True)
 			self.spyl.setEnabled(True)
 			self.cby.setEnabled(True)
-
-			# self.degree_label.setEnabled(True)
-			# self.curve_fitting_sb.setEnabled(True)
-			# self.cb_axes.setEnabled(True)
-			# self.cbz.setEnabled(True)	
-			# self.slzl.setEnabled(True)
-			# self.slzh.setEnabled(True)
-			# self.spzl.setEnabled(True)
-			# self.spzh.setEnabled(True)
-			# self.zl.setEnabled(True)
-			# self.zh.setEnabled(True)
-			# self.z_axis_label.setEnabled(True)
-			# self.z_axis_field.setEnabled(True)
-			# self.enable_plot_pareto.setEnabled(True)
-			# self.pareto_x.setEnabled(True)
-			# self.pareto_y.setEnabled(True)
-			# self.pareto_cbx.setEnabled(True)
-			# self.pareto_cby.setEnabled(True)
-			# self.enable_3d.setEnabled(True)
-			# self.cb3.setEnabled(True)
 			self.enable_custom_formula.setEnabled(True)
 			self.enable_curve_fitting.setEnabled(True)
 			self.enable_plot_pareto.setEnabled(True)
@@ -1443,7 +1388,6 @@ class sub_window(QWidget):										#class defining the sub windows(as they appe
 				a = (float)(self.slzh.value())
 			self.spzh.setValue(a)
 
-	#def update_file_func(self):
 
 
 class tabs(QTabWidget):									#used to implement tabs
