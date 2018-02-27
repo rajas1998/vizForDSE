@@ -236,7 +236,7 @@ class col_filtering_window(QWidget):							#defines the class for column filteri
 
 
 	
-class update_constraints_window(QWidget):
+class update_constraints_window(QWidget):			# WINDOW TO GENERATE CONSTRAINTS FILE
 	def __init__(self):
 		super(update_constraints_window,self).__init__()
 		self.setWindowTitle(" Setting constraints ")
@@ -244,9 +244,7 @@ class update_constraints_window(QWidget):
 
 		self.cb = QComboBox()
 		self.cb.clear()
-		# list1=["Accuracy","NCore","Bmodel","Blife","Weight","WS"]
-		# print list1
-		# self.cb.addItems(list1)
+		
 
 		# LOWER
 		self.lower_limit_label = QLabel("Lower limit: ")
@@ -310,7 +308,7 @@ class update_constraints_window(QWidget):
 		choose.addLayout(upper_limitf)
 		choose.addLayout(allowed_valuesf)
 
-		###
+		
 		lay_constraints = QHBoxLayout()
 		lay_constraints.addWidget(self.cb)
 		lay_constraints.addLayout(choose)
@@ -425,10 +423,10 @@ class update_constraints_window(QWidget):
 
 
 
-	def generate_func(self):						#######
+	def generate_func(self):						
 
-		global cons
-		global final_constraints
+		global cons 									# dictionary to store the final constraints
+		global final_constraints						
 		global undo_old
 		global undo_new
 		global write
@@ -436,7 +434,7 @@ class update_constraints_window(QWidget):
 		b=str(PyQt4.QtCore.QString(self.cb.currentText()))
 		if (self.enable_allowed_values.isChecked()):
 			values = (self.allowed_values.text())
-			cons[b]=[3,str(values)]
+			cons[b]=[3,str(values)]									# 3 denotes insertion of discrete values
 			#print cons[b]
 		elif (self.enable_lower_limit.isChecked() and self.enable_upper_limit.isChecked()):
 			ll = float(self.lower_limit.text())
@@ -449,13 +447,13 @@ class update_constraints_window(QWidget):
 				msg.setStandardButtons(QMessageBox.Ok)
 				msg.exec_()
 			else:
-				cons[b]=[2,ll,ul]
+				cons[b]=[2,ll,ul]									# 2 implies both upper and lower limits have been specified
 		elif (self.enable_lower_limit.isChecked()):
 			ll=float(self.lower_limit.text())
-			cons[b]=[0,ll]
+			cons[b]=[0,ll]											# 0 if only the lower limit specified
 		elif (self.enable_upper_limit.isChecked()):
 			ul = float(self.upper_limit.text())
-			cons[b]=[1,ul]
+			cons[b]=[1,ul]											# 1 if only the upper limit is specified
 
 		#final_constraints list created from the dictionary cons to be written in to the contrainsts file
 		if (len(cons)==0):

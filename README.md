@@ -42,4 +42,3 @@ Operating vizForDSE with external tool
 5. Open the generate constraints file
 6. Put in the necessary constraints and click on generate. Wait for a little time as the tool takes time to run.
 7. Open generated.csv created in the vizForDSE folder to see the csv for plotting. 
-

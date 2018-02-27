@@ -566,51 +566,6 @@ def plotter (fig,canvas,v):
 				m += 1
 			i += 1
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	# i = 0
-
-	# # if paretopoints are enabled - find the pareto points and add them to paretoPoints
-
-	# if configLines[0][3] == '3' :
-	# 	if configLines[0][4] == '1' :
-	# 		tempList = sorted(filterPoints)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ >= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '2' :
-	# 		tempList = sorted(filterPoints)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ <= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '3' :
-	# 		tempList = sorted(filterPoints,reverse=True)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ >= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-	# 	elif configLines[0][4] == '4' :
-	# 		tempList = sorted(filterPoints,reverse=True)
-	# 		paretoPoints.append(tempList[0])
-	# 		j = 0
-	# 		for x_,y_,z_ in tempList :
-	# 			if y_ <= paretoPoints[j][1] :
-	# 				paretoPoints.append((x_,y_,z_))
-	# 				j+=1
-	# 		paretoPoints.pop(0)
-
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-# # set the plotPointsX,Y,Z depending if 3d/pareto points or none 
 
 	i = 0
 	if configLines[0][3] == '1' :
